@@ -1,3 +1,6 @@
+//References: Udacity, W3Schools, MDN web docs
+//References: Former Udacity Content Developer, Mike Wales : https://www.youtube.com/watch?v=_rUH-sEs68Y
+
 /*
  * Create a list that holds all of your cards
  */
@@ -11,6 +14,7 @@ const cards = ['fa-diamond','fa-diamond',
               'fa-bicycle','fa-bicycle',
               'fa-bomb','fa-bomb'];
 
+//Template card
 function generateCard(card){
   return `<li class="card" data-card="${card}">
             <i class="fa ${card}"></i>
@@ -22,7 +26,7 @@ function generateCard(card){
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-
+//Restart game
 const restart = document.querySelector('.restart');
 restart.addEventListener('click',function(event){
 
@@ -33,7 +37,7 @@ restart.addEventListener('click',function(event){
 })
 
 
-
+//Set up game
  function initGame(){
    const deck = document.querySelector('.deck');
    const moveCounter = document.getElementById('moves');
@@ -90,7 +94,7 @@ const close = document.getElementsByClassName('close')[0];
 
 
 let timeId = 0;
-
+//Timer
 function timeInter(){
   timeId = setInterval(times, 1000);
 }
@@ -104,7 +108,7 @@ function stopTimer(){
   clearInterval(timeId);
 }
 
-
+//Star rating
 const allStars = [...document.querySelectorAll('li > i.fa-star')];
 function starRate(){
 
@@ -122,7 +126,7 @@ function starRate(){
 }
 
 
-
+//Congratulations Popup
 function endGame(){
   const result = `<p>You win the game in ${time} seconds and ${allStars.length} star(s)</p>`;
   const addResult = document.querySelector('.modal-in > p');
@@ -134,6 +138,7 @@ function endGame(){
   })
 }
 
+//Card matching
 function matchCard(){
   match += 2;
   openCards[0].classList.add('match');
@@ -143,7 +148,7 @@ function matchCard(){
   openCards = [];
 }
 
-
+//Game Logic
   allCards.forEach(function(card){
     card.addEventListener('click',function(event){
 
