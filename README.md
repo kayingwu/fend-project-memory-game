@@ -1,5 +1,6 @@
 # Memory Game Project
-
+ Flip over two hidden cards at a time to locate the ones that match!
+ The game ends once all cards have been correctly matched.
 ## Table of Contents
 
 * [Instructions](#instructions)
