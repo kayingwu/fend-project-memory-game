@@ -27,15 +27,24 @@ function generateCard(card){
  *   - add each card's HTML to the page
  */
 //Restart game
-const restart = document.querySelector('.restart');
-restart.addEventListener('click',function(event){
-
-
-  allStars[0].classList.add('fa-star');
-  allStars[1].classList.add('fa-star');
+//const restart = document.querySelector('.restart');
+//restart.addEventListener('click',function(event){
+/*
+function reset(){
   initGame();
-})
+  gameLogic(allCards);
+  time = 0;
+  while (numOfStart < 3){
+    refillStar();
+    numOfStart++;
+  }
+}
+*/
 
+function refillStar(){
+  const oneStar = document.querySelector('li > i.fa-star');
+  oneStar.insertAdjacentHTML('afterend','<li><i class="fa fa-star"></i></li>');
+}
 
 //Set up game
  function initGame(){
@@ -83,52 +92,71 @@ function shuffle(array) {
  */
 
 const allCards = document.querySelectorAll('.card');
+
 let openCards = [];
 var moves = 0;
 let match = 0;
-let time = 0;
+var time = 0;
 const moveCounter = document.getElementById('moves');
 const timeCounter = document.getElementById('timer');
 const modal = document.getElementById('modal');
 const close = document.getElementsByClassName('close')[0];
 
-
+/*
 let timeId = 0;
 //Timer
 function timeInter(){
   timeId = setInterval(times, 1000);
 }
+*/
 
+const timeId = setInterval(times, 1000);
 function times(){
   time += 1;
   timeCounter.innerText = time;
 }
-
+/*
+function times(){
+  timeId = setInterval(function(){
+  time += 1;
+  timeCounter.innerText = time;
+  },1000);
+}
+*/
+/*
 function stopTimer(){
   clearInterval(timeId);
 }
+*/
 
+let numOfStart = 3;
 //Star rating
 const allStars = [...document.querySelectorAll('li > i.fa-star')];
+//const allStars = document.querySelectorAll('li > i.fa-star');
 function starRate(){
 
     if (moves == 12) {
+      numOfStart --;
       allStars[0].classList.remove('fa-star');
-      allStars.splice(0,1);
+      //allStars.splice(0,1);
+      //numOfStart --;
 
     } else if (moves == 24) {
-      allStars[0].classList.remove('fa-star');
-      allStars.splice(0,1);
+      numOfStart --;
+      allStars[1].classList.remove('fa-star');
+      //allStars.splice(0,1);
+      //numOfStart --;
 
-    } else {
+    } /*else {
       allStars.splice(0,0);
-    }
+    }*/
 }
 
 
 //Congratulations Popup
 function endGame(){
-  const result = `<p>You win the game in ${time} seconds and ${allStars.length} star(s)</p>`;
+  //const result = `<p>You win the game in ${time} seconds and ${allStars.length} star(s)</p>`;
+  const result = `<p>You win the game in ${time} seconds and ${numOfStart} star(s)</p>`;
   const addResult = document.querySelector('.modal-in > p');
   modal.style.display = 'block';
   addResult.insertAdjacentHTML('afterend',result);
@@ -148,21 +176,29 @@ function matchCard(){
   openCards = [];
 }
 
+
+
+
 //Game Logic
+function gameLogic(allCards){
   allCards.forEach(function(card){
     card.addEventListener('click',function(event){
+
+      //const timeId = setInterval(times, 1000);
+
+
 
       if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match'))
         openCards.push(card);
         card.classList.add('open','show');
 
-
         if (openCards.length == 2){
           if (openCards[0].dataset.card == openCards[1].dataset.card){
             matchCard();
 
-            if (match == cards.length){
-              stopTimer();
+            if (match == 16){
+              //stopTimer();
+              clearInterval(timeId);
               endGame();
 
             }
@@ -179,8 +215,23 @@ function matchCard(){
           }
           moves += 1;
           moveCounter.innerText = moves;
-          timeInter();
+
           starRate();
         }
     });
 });
+}
+
+gameLogic(allCards)
+
+function reset(){
+  initGame();
+  gameLogic(allCards);
+  
+  time = 0;
+  timeCounter.innerText = time;
+  while (numOfStart < 3){
+    refillStar();
+    numOfStart++;
+  }
+}
