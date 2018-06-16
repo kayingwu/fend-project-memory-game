@@ -1,11 +1,15 @@
-//References: Udacity, W3Schools, MDN web docs
-//References: Former Udacity Content Developer, Mike Wales : https://www.youtube.com/watch?v=_rUH-sEs68Y
+/*
+References: Udacity, W3Schools, MDN web docs, Slack
+Udacity, W3Schools, MDN web docs, Slack
+Former Udacity Content Developer, Mike Wales : https://www.youtube.com/watch?v=_rUH-sEs68Y
+Project Coach, Ryan Waite : https://www.youtube.com/watch?v=oECVwum-7Zc
+*/
 
 /*
  * Create a list that holds all of your cards
  */
 
-const cards = ['fa-diamond','fa-diamond',
+var cards = ['fa-diamond','fa-diamond',
               'fa-paper-plane-o','fa-paper-plane-o',
               'fa-anchor','fa-anchor',
               'fa-bolt','fa-bolt',
@@ -14,8 +18,8 @@ const cards = ['fa-diamond','fa-diamond',
               'fa-bicycle','fa-bicycle',
               'fa-bomb','fa-bomb'];
 
-//Template card
-function generateCard(card){
+// Template card
+function generateCard(card) {
   return `<li class="card" data-card="${card}">
             <i class="fa ${card}"></i>
           </li>`;
@@ -26,32 +30,13 @@ function generateCard(card){
  *   - loop through each card and create its HTML
  *   - add each card's HTML to the page
  */
-//Restart game
-//const restart = document.querySelector('.restart');
-//restart.addEventListener('click',function(event){
-/*
-function reset(){
-  initGame();
-  gameLogic(allCards);
-  time = 0;
-  while (numOfStart < 3){
-    refillStar();
-    numOfStart++;
-  }
-}
-*/
 
-function refillStar(){
-  const oneStar = document.querySelector('li > i.fa-star');
-  oneStar.insertAdjacentHTML('afterend','<li><i class="fa fa-star"></i></li>');
-}
+// Set up game
+ function initGame() {
+   var deck = document.querySelector('.deck');
+   var moveCounter = document.getElementById('moves');
 
-//Set up game
- function initGame(){
-   const deck = document.querySelector('.deck');
-   const moveCounter = document.getElementById('moves');
-
-   const cardHTML = shuffle(cards).map(function(card){
+   var cardHTML = shuffle(cards).map(function(card) {
      return generateCard(card);
    });
 
@@ -91,122 +76,111 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-const allCards = document.querySelectorAll('.card');
 
-let openCards = [];
+
+var openCards = [];
 var moves = 0;
-let match = 0;
+var match = 0;
 var time = 0;
-const moveCounter = document.getElementById('moves');
-const timeCounter = document.getElementById('timer');
-const modal = document.getElementById('modal');
-const close = document.getElementsByClassName('close')[0];
+var timer;
+var moveCounter = document.getElementById('moves');
+var timeCounter = document.getElementById('timer');
+var modal = document.getElementById('modal');
+var close = document.getElementsByClassName('close')[0];
 
-/*
-let timeId = 0;
-//Timer
-function timeInter(){
-  timeId = setInterval(times, 1000);
-}
-*/
 
-const timeId = setInterval(times, 1000);
-function times(){
-  time += 1;
-  timeCounter.innerText = time;
-}
-/*
-function times(){
-  timeId = setInterval(function(){
-  time += 1;
+
+// Timer
+function setTimer() {
+  timer = setInterval(function() {
+  time++;
   timeCounter.innerText = time;
   },1000);
 }
-*/
-/*
-function stopTimer(){
-  clearInterval(timeId);
-}
-*/
 
-let numOfStart = 3;
-//Star rating
-const allStars = [...document.querySelectorAll('li > i.fa-star')];
-//const allStars = document.querySelectorAll('li > i.fa-star');
+function stopTimer() {
+  clearInterval(timer);
+}
+
+var deck = document.querySelector('ul.deck');
+deck.addEventListener('click', function() {
+  if (!timer){
+    setTimer();
+  }
+})
+
+// Star rating
+var numOfStart = 3;
+var allStars = [...document.querySelectorAll('li > i.fa-star')];
+
 function starRate(){
 
-    if (moves == 12) {
+    if (moves === 12) {
       numOfStart --;
       allStars[0].classList.remove('fa-star');
-      //allStars.splice(0,1);
-      //numOfStart --;
 
-    } else if (moves == 24) {
+    } else if (moves === 24) {
       numOfStart --;
       allStars[1].classList.remove('fa-star');
-      //allStars.splice(0,1);
-      //numOfStart --;
 
-    } /*else {
-      allStars.splice(0,0);
-    }*/
+    }
 }
 
+function refillStar() {
+  allStars[0].classList.add('fa-star');
+  allStars[1].classList.add('fa-star');
+}
 
-//Congratulations Popup
-function endGame(){
-  //const result = `<p>You win the game in ${time} seconds and ${allStars.length} star(s)</p>`;
-  const result = `<p>You win the game in ${time} seconds and ${numOfStart} star(s)</p>`;
-  const addResult = document.querySelector('.modal-in > p');
+// Congratulations Popup
+function endGame() {
+  var result = `<p>You won the game in ${time} seconds and ${numOfStart} star(s)</p>`;
+  var addResult = document.querySelector('.modal-in > p');
   modal.style.display = 'block';
   addResult.insertAdjacentHTML('afterend',result);
 
-  close.onclick = (function(){
+  close.onclick = (function() {
     modal.style.display = 'none';
   })
 }
 
-//Card matching
-function matchCard(){
+// Card matching
+function matchCard() {
   match += 2;
   openCards[0].classList.add('match');
   openCards[0].classList.remove('open','show');
   openCards[1].classList.add('match');
   openCards[1].classList.remove('open','show');
   openCards = [];
+
+  if (match === 16) {
+    stopTimer();
+    endGame();
+  }
 }
 
 
 
 
 //Game Logic
-function gameLogic(allCards){
+function gameLogic() {
+  var allCards = document.querySelectorAll('.card');
+
   allCards.forEach(function(card){
-    card.addEventListener('click',function(event){
-
-      //const timeId = setInterval(times, 1000);
-
-
+    card.addEventListener('click',function(event) {
 
       if (!card.classList.contains('open') && !card.classList.contains('show') && !card.classList.contains('match'))
         openCards.push(card);
         card.classList.add('open','show');
 
-        if (openCards.length == 2){
+        if (openCards.length === 2) {
           if (openCards[0].dataset.card == openCards[1].dataset.card){
             matchCard();
 
-            if (match == 16){
-              //stopTimer();
-              clearInterval(timeId);
-              endGame();
-
-            }
           } else {
 
             //if no match, hide
-            setTimeout(function(){
-              openCards.forEach(function(card){
+            setTimeout(function() {
+              openCards.forEach(function(card) {
                 card.classList.remove('open','show');
               });
 
@@ -222,16 +196,22 @@ function gameLogic(allCards){
 });
 }
 
-gameLogic(allCards)
+gameLogic()
 
 function reset(){
   initGame();
-  gameLogic(allCards);
-  
+
+  stopTimer();
+  setTimer();
   time = 0;
+
   timeCounter.innerText = time;
-  while (numOfStart < 3){
+
+  while (numOfStart < 3) {
     refillStar();
     numOfStart++;
   }
+  gameLogic();
+  match = 0;
+
 }
